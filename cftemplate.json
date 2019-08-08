@@ -4,7 +4,9 @@
     "JarFileSource": {"Type": "String"},
     "JarFileName": {"Type": "String"},
     "IAMRoleName": {"Type": "String"},
-    "EC2KeyName": {"Type": "String"}
+    "EC2KeyName": {"Type": "String"},
+    "KibanaHostname": {"Type": "String"},
+    "ElasticSearchHostname": {"Type": "String"}
   },
   "Resources": {
     "EC2InstanceDemoSvr": {
@@ -27,8 +29,28 @@
               "#!/bin/bash",
               "yum update -y",
               "yum install -y java-1.8.0-openjdk-headless.x86_64",
+              "rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch",
+              "cat > /etc/yum.repos.d/elastic.repo <<-EOF",
+              "[elastic-7.x]",
+              "name=Elastic repository for 7.x packages",
+              "baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum",
+              "gpgcheck=1",
+              "gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch",
+              "enabled=1",
+              "autorefresh=1",
+              "type=rpm-md",
+              "EOF",
+              "yum install -y filebeat",
+              "service filebeat start",
+              "touch /var/log/utopia-booking.log",
+              "chown ec2-user /var/log/utopia-booking.log",
+              {"Fn::Join": ["", ["sed -i -e 's@#host: \"localhost:5601\"@host: ", {"Ref": "KibanaHostname"},
+                      "@' -e 's@hosts: \\[\"localhost:9200\"]@hosts: \\[\"", {"Ref": "ElasticSearchHostname"},
+                      ":9200\"]@' /etc/filebeat/filebeat.yml"]]},
+              "set -x",
               {"Fn::Join": [ " ", ["aws s3 cp", {"Ref": "JarFileSource"}, "."]]},
-              {"Fn::Join": [ " ", ["nohup java -jar", {"Ref": "JarFileName"}, "&"]]}
+              "set +x",
+              {"Fn::Join": [ " ", ["nohup java -jar -Dlogging.file=/var/log/utopia-booking.log", {"Ref": "JarFileName"}, "&"]]}
             ]]
           }
         },

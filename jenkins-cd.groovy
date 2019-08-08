@@ -10,7 +10,7 @@ node {
 
     stage('Create parameters file') {
         sh label: 'Remove old parameters file', script: 'rm -f cloud-formation-params.json';
-        withCredentials([string(credentialsId: 'TargetBucket', variable: 'TargetBucket'), string(credentialsId: 'IAMRole', variable: 'IAMRole'), string(credentialsId: 'EC2Key', variable: 'EC2Key')]) {
+        withCredentials([string(credentialsId: 'TargetBucket', variable: 'TargetBucket'), string(credentialsId: 'IAMRole', variable: 'IAMRole'), string(credentialsId: 'EC2Key', variable: 'EC2Key'), string(credentialsId: 'KibanaHostname', variable: 'KibanaHostname'), string(credentialsId: 'ElasticSearchHostname', variable: 'ElasticSearchHostname')]) {
             writeFile encoding: 'UTF-8', file: 'cloud-formation-params.json', text: """[
   {
     "ParameterKey": "JarFileSource",
@@ -27,6 +27,14 @@ node {
   {
     "ParameterKey": "EC2KeyName",
     "ParameterValue": "${EC2Key}"
+  },
+  {
+    "ParameterKey": "ElasticSearchHostname",
+    "ParameterValue": "${ElasticSearchHostname}"
+  },
+  {
+    "ParameterKey": "KibanaHostname",
+    "ParameterValue": "${KibanaHostname}"
   }
 ]"""
         }
