@@ -41,6 +41,7 @@
               "type=rpm-md",
               "EOF",
               "yum install -y filebeat",
+	      "mkdir -p /var/log/filebeat",
               "service filebeat start",
               "touch /var/log/utopia-booking.log",
               "chown ec2-user /var/log/utopia-booking.log",
