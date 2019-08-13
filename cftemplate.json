@@ -47,7 +47,7 @@
               "chown ec2-user /var/log/utopia-booking.log",
               {"Fn::Join": ["", ["sed -i -e 's@#host: \"localhost:5601\"@host: ", {"Ref": "KibanaHostname"},
                       "@' -e 's@hosts: \\[\"localhost:9200\"]@hosts: \\[\"", {"Ref": "ElasticSearchHostname"},
-                      ":9200\"]@' /etc/filebeat/filebeat.yml"]]},
+                      ":443\"]@' /etc/filebeat/filebeat.yml"]]},
               "set -x",
               {"Fn::Join": [ " ", ["aws s3 cp", {"Ref": "JarFileSource"}, "."]]},
               "set +x",
