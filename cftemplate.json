@@ -50,9 +50,7 @@
               "filebeat setup --pipelines --template --dashboards",
               "filebeat test output",
               "service filebeat start",
-              "set -x",
               {"Fn::Join": [ " ", ["aws s3 cp", {"Ref": "JarFileSource"}, "."]]},
-              "set +x",
               {"Fn::Join": [ " ", ["nohup java -jar -Dlogging.file=/var/log/utopia-booking.log", {"Ref": "JarFileName"}, "&"]]}
             ]]
           }
