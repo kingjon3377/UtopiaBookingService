@@ -48,6 +48,7 @@
                       "@' -e 's@hosts: \\[\"localhost:9200\"]@hosts: \\[\"", {"Ref": "ElasticSearchHostname"},
                       ":443\"]@' -e 's@/var/log/\\*.log@/var/log/utopia-booking.log@' /etc/filebeat/filebeat.yml"]]},
               "echo 'xpack.monitoring.enabled: false' >> /etc/filebeat/filebeat.yml",
+              "echo 'setup.ilm.enabled: false' >> /etc/filebeat/filebeat.yml",
               "filebeat setup --pipelines --template --dashboards",
               "filebeat test output",
               "service filebeat start",
